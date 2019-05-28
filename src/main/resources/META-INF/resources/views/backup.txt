@@ -1,0 +1,11 @@
+<c:forEach items="${requests}" var="request">
+	<div>
+		<div><b>Subject:</b> <c:out value="${request.getSubject()}" /></div>
+		<div><b>State:</b> <c:out value="${request.getState()}" /></div>
+		<div><b>Priority:</b> <c:out value="${request.getPriority()}" /></div>
+		<div><b>Request:</b> <c:out value="${request.getBody()}" /></div>
+		<i><c:out value="${request.getCreatedAt()}" /></i>
+	</div>
+	<br/>
+	<hr/>
+</c:forEach>
