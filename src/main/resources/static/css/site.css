@@ -9,6 +9,14 @@
 	width: 100%;
 }
 
+.nav-pills>li>a{
+	color:white !important;
+}
+
+.nav-pills>li>a:hover{
+	color:#333 !important;
+}
+
 .nav-pills>li.active>a {
 	color: #383131 !important;
 	font-weight: bold;
@@ -22,6 +30,9 @@
 	background: #85eaf4 !important;
 }
 
+.sidenav{
+	background: #2b2525!important;
+}
 
 .logo-top{
 	width: 30px;	

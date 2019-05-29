@@ -3,6 +3,10 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
+			<div class="text-right">
+				<a class="btn btn-info" href="${request.getContextPath()}/requests/new">+ Create Request</a>
+			</div>
+			<hr/>
 			<table class="table table-striped">
 				<thead>
 					<tr>
