@@ -31,7 +31,7 @@
 					<p class="list-group-item-text">${appRequest.getBody()}</p>
 				</div>
 				<div class="list-group-item text-right">
-					<i>${appRequest.getCreatedAt()}</i>
+					<b>${appRequest.getUser().getUsername()}</b> - <i>${appRequest.getCreatedAt()}</i>
 				</div>
 
 			</div>

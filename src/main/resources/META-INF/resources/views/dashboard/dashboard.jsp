@@ -15,6 +15,7 @@
 						<th>Status</th>
 						<th>Priority</th>
 						<th>Subject</th>
+						<th>Creator</th>
 						<th>Creation Date</th>
 					</tr>
 				</thead>
@@ -29,6 +30,7 @@
 							<td><c:out value="${req.getState()}" /></td>
 							<td><c:out value="${req.getPriority()}" /></td>
 							<td><c:out value="${req.getShortBody(40)}" /></td>
+							<td><c:out value="${req.getUser().getUsername()}" /></td>
 							<td><c:out value="${req.getCreatedAt()}" /></td>
 						</tr>
 

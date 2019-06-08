@@ -73,8 +73,11 @@ public class RequestController {
 		if (result.hasErrors()) {
 			return "error";
 		}
+		
+		User user = userDao.findByUserName(AuthSystem.currentUsername());
 
 		appRequest.setState("OPEN");
+		appRequest.setUser(user);
 
 		Request req = requestRepo.save(appRequest);
 
@@ -83,7 +86,7 @@ public class RequestController {
 
 	@PostMapping("/{id}/comments")
 	public @ResponseBody JsonResponse createComment(@RequestParam("content") String content,
-			@PathVariable("id") Integer id, Authentication auth, ModelMap model) {
+			@PathVariable("id") Integer id, ModelMap model) {
 
 		Request request = requestRepo.getOne(id);
 

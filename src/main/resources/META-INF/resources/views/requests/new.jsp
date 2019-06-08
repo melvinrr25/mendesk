@@ -2,31 +2,38 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
-			<form:form method="POST"
-				action="${pageContext.request.contextPath}/requests"
-				modelAttribute="appRequest">
-				<table>
-					<tr>
-						<td><form:label path="subject">Subject</form:label></td>
-						<td><form:input path="subject" /></td>
-					</tr>
-					<tr>
-						<td><form:label path="priority">Priority</form:label></td>
-						<td><form:select path="priority" items="${priorityOptions}" /></td>
-					</tr>
-					<tr>
-						<td><form:label path="body">Body</form:label></td>
-						<td><form:textarea path="body" /></td>
-					</tr>
-					
-					<tr>
-						<td><input type="submit" value="Submit" /></td>
-					</tr>
-				</table>
-			</form:form>
-		</div>
+		<form:form method="POST"
+			action="${pageContext.request.contextPath}/requests"
+			modelAttribute="appRequest">
+			<div class="col-md-6">
+				<form role="form">
+
+					<div class="form-group">
+						<form:label path="subject">Subject</form:label>
+						<form:input path="subject" cssClass="form-control" />
+					</div>
+
+					<div class="form-group">
+						<form:label path="priority">Priority</form:label>
+						<form:select path="priority" cssClass="form-control"
+							items="${priorityOptions}" />
+					</div>
+
+
+					<div class="form-group">
+						<form:label path="body">Body</form:label>
+						<form:textarea path="body" cssClass="form-control" />
+					</div>
+
+
+					<input type="submit" class="btn btn-primary" value="Submit" />
+
+				</form>
+			</div>
+			<div class="col-md-6"></div>
+		</form:form>
 	</div>
 </div>
+
 
 <%@include file="../shared/footer.jsp"%>

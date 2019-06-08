@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -18,8 +19,9 @@ import javax.persistence.Table;
 @Table(name = "requests")
 public class Request {
 
-	public Request(String subject, String body, String state, String priority) {
+	public Request(User user, String subject, String body, String state, String priority) {
 		super();
+		this.user = user;
 		this.subject = subject;
 		this.body = body;
 		this.state = state;
@@ -40,9 +42,12 @@ public class Request {
 	private String state;
 
 	private String priority;
-	
+
+	@ManyToOne
+	private User user;
+
 	@OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<Comment>();
+	private List<Comment> comments = new ArrayList<Comment>();
 
 	public List<Comment> getComments() {
 		return comments;
@@ -66,6 +71,14 @@ public class Request {
 	@PreUpdate
 	protected void onUpdate() {
 		updatedAt = new Date();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Integer getId() {
