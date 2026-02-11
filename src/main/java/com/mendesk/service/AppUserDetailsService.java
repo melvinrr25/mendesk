@@ -8,54 +8,44 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mendesk.dao.UserDao;
+import com.mendesk.entity.User;
 import com.mendesk.entity.UserRole;
+import com.mendesk.repository.UserRepo;
 
 @Service("userDetailsService")
 public class AppUserDetailsService implements UserDetailsService {
 
-	//get user from the database, via Hibernate
 	@Autowired
-	private UserDao userDao;
+	private UserRepo userRepo;
 
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	@Override
-	public UserDetails loadUserByUsername(final String username) 
-		throws UsernameNotFoundException {
-	
-		com.mendesk.entity.User user = userDao.findByUserName(username);
-		List<GrantedAuthority> authorities = 
-                                      buildUserAuthority(user.getRoles());
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepo.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-		return buildUserForAuthentication(user, authorities);
-		
+		List<GrantedAuthority> authorities = buildUserAuthority(user.getRole());
+
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),
+				user.getPassword(),
+				user.isEnabled(),
+				true,
+				true,
+				true,
+				authorities
+		);
 	}
 
-	private User buildUserForAuthentication(com.mendesk.entity.User user, 
-		List<GrantedAuthority> authorities) {
-		return new User(user.getUsername(), user.getPassword(), 
-			user.isEnabled(), true, true, true, authorities);
+	private List<GrantedAuthority> buildUserAuthority(UserRole role) {
+		Set<GrantedAuthority> setAuths = new HashSet<>();
+		setAuths.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+		return new ArrayList<>(setAuths);
 	}
-
-	private List<GrantedAuthority> buildUserAuthority(List<UserRole> list) {
-
-		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
-
-		// Build user's authorities
-		for (UserRole role : list) {
-			setAuths.add(new SimpleGrantedAuthority(role.getRole()));
-		}
-
-		List<GrantedAuthority> result = new ArrayList<GrantedAuthority>(setAuths);
-
-		return result;
-	}
-
 }

@@ -26,4 +26,13 @@ public class UserDao {
 
 	}
 
+	public User save(User user) {
+		if (user.getId() == null) {
+			manager.persist(user);
+		} else {
+			manager.merge(user);
+		}
+		return user;
+	}
+
 }

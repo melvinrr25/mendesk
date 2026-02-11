@@ -1,77 +1,87 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- 
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Mendesk</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="shortcut icon"
-	href="<%=request.getContextPath()%>/images/favicon.png"
-	type="image/x-icon" />
+<title>Mendesk - Support Ticket System</title>
+<link rel="shortcut icon" href="<%=request.getContextPath()%>/images/favicon.png" type="image/x-icon" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/site.css">
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-<style>
-/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-.row.content {
-	height: 550px
-}
-
-/* Set gray background color and 100% height */
-.sidenav {
-	background-color: #f1f1f1;
-	height: 100vh;
-}
-
-/* On small screens, set height to 'auto' for the grid */
-@media screen and (max-width: 767px) {
-	.row.content {
-		height: auto;
-	}
-}
-</style>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
-
-	<nav class="navbar navbar-inverse visible-xs">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#myNavbar">
-					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				
-				<a class="navbar-brand" href="<%=request.getContextPath()%>/">Mendesk</a>
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
-					<%@include file="menu-items.jsp"%>
-				</ul>
-			</div>
+<nav class="navbar navbar-expand-lg">
+	<div class="container">
+		<a class="navbar-brand" href="<%=request.getContextPath()%>/">
+			<i class="fas fa-headset"></i>
+			<span>Mendesk</span>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+			<i class="fas fa-bars"></i>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<sec:authorize access="!isAuthenticated()">
+					<li class="nav-item">
+						<a class="nav-link" href="<%=request.getContextPath()%>/login">
+							<i class="fas fa-sign-in-alt"></i> Login
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<%=request.getContextPath()%>/register">
+							<i class="fas fa-user-plus"></i> Register
+						</a>
+					</li>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+					<li class="nav-item">
+						<a class="nav-link" href="<%=request.getContextPath()%>/dashboard">
+							<i class="fas fa-home"></i> Dashboard
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<%=request.getContextPath()%>/tickets">
+							<i class="fas fa-ticket-alt"></i> Tickets
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<%=request.getContextPath()%>/tickets/new">
+							<i class="fas fa-plus"></i> New Ticket
+						</a>
+					</li>
+					<sec:authorize access="hasRole('ADMIN')">
+						<li class="nav-item">
+							<a class="nav-link" href="<%=request.getContextPath()%>/admin/users">
+								<i class="fas fa-users-cog"></i> Manage Users
+							</a>
+						</li>
+					</sec:authorize>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+							<i class="fas fa-user-circle"></i>
+							<span><sec:authentication property="principal.username" /></span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right">
+							<a class="dropdown-item" href="<%=request.getContextPath()%>/profile">
+								<i class="fas fa-user"></i> Profile
+							</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="<%=request.getContextPath()%>/logout">
+								<i class="fas fa-sign-out-alt"></i> Logout
+							</a>
+						</div>
+					</li>
+				</sec:authorize>
+			</ul>
 		</div>
-	</nav>
+	</div>
+</nav>
 
-	<div class="container-fluid">
-		<div class="row content">
-			<div class="col-sm-2 sidenav hidden-xs">
-				<a href="<%=request.getContextPath()%>/">
-				<img class="full-image" alt="Logo"
-					src="<%=request.getContextPath()%>/images/logo-transparent.png">
-				</a>
-
-				<ul class="nav nav-pills nav-stacked">
-					<%@include file="menu-items.jsp"%>
-				</ul>
-				<br>
-			</div>
-			<br>
-			<div class="col-sm-10">
+<main>

@@ -1,61 +1,61 @@
 package com.mendesk.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "comments")
 public class Comment {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@NotBlank(message = "Comment content is required")
+	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 
-	@ManyToOne
-	private Request request;
-	
-	@ManyToOne
-	private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Ticket ticket;
 
-	public Request getRequest() {
-		return request;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User author;
 
-	public void setRequest(Request request) {
-		this.request = request;
-	}
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private CommentType type = CommentType.PUBLIC;
 
-	@Column(name = "created_at")
-	private Date createdAt;
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-	@PrePersist
-	protected void onCreate() {
-		createdAt = new Date();
-	}
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 
 	public Comment() {
 	}
 
-	public Comment(String content, Request request, User user) {
-		super();
-		this.content = content;
-		this.request = request;
-		this.user = user;
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+		updatedAt = LocalDateTime.now();
 	}
 
-	@Override
-	public String toString() {
-		return "Comment  [id=" + id + ", content=" + content + ", createdAt=" + createdAt + "]";
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = LocalDateTime.now();
 	}
 
 	public Integer getId() {
@@ -74,20 +74,51 @@ public class Comment {
 		this.content = content;
 	}
 
-	public Date getCreatedAt() {
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
+	}
+
+	public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	public CommentType getType() {
+		return type;
+	}
+
+	public void setType(CommentType type) {
+		this.type = type;
+	}
+
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public User getUser() {
-		return user;
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
+	public boolean isInternal() {
+		return type == CommentType.INTERNAL;
+	}
+
+	public String getAuthorName() {
+		return author != null ? author.getUsername() : "Unknown";
+	}
 }
